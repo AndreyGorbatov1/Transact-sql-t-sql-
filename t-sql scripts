@@ -129,3 +129,14 @@ NOT
 --SELECT * 
 --FROM sys.tables 
 --WHERE lower(name) LIKE '%matrix%'
+
+
+--get server list
+
+use database_name
+go
+select 'chcp 1251'
+union
+SELECT 'sqlcmd.exe -S ' + ip + '\'+ sqlinstance + ',' + port + ' -d ' + dbName +' -U username -P password -i "update.sql"'
+FROM Rp_SrvInfo
+WHERE activeFlag = 1
