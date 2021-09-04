@@ -1,0 +1,131 @@
+--***FETCH OFFSET TEST***
+--SELECT  top 20000 * 
+--FROM database_name.table_name
+--order by column_name
+--offset 0 rows
+--fetch 100 rows only
+
+
+--***FIND TABLE BY COLUMN NAME***
+--SELECT COLUMN_NAME, TABLE_NAME 
+--FROM database_name.INFORMATION_SCHEMA.COLUMNS 
+--WHERE COLUMN_NAME LIKE '%string_to_look_for%'
+
+
+--***DATE FUNCTIONS***
+--SELECT DATEDIFF(d, '2005-12-31 23:59:59.9999999', '2006-01-02 00:00:00.0000000');
+--select convert(datetime,convert(varchar(12), GETDATE(), 112),112)
+--select cast(convert(char(8), GETDATE(), 112) as int)
+--SELECT CONVERT(INT, CAST ('1900-01-07 09:23:30' as DATETIME)) - CONVERT(INT, CAST ('1900-01-04 09:23:30' as DATETIME))
+--SELECT CAST('2017-08-25' AS datetime);
+--SELECT CAST(GETDATE()-1 AS int);
+
+
+--***CREATE TABLES FOR TESTS***
+--CREATE TABLE #t1 (
+--    column1 int,
+--    column2 varchar(100)
+--);
+--CREATE TABLE #t2 (
+--    column3 int,
+--    column4 varchar(100)
+--);
+
+--INSERT INTO #t1 (column1)
+--VALUES (1);
+--INSERT INTO #t2 (column3)
+--VALUES (2);
+
+--select * from #t1 join #t2 on column2=column4
+
+--drop table #t1, #t2;
+
+
+--***CHECKSUM WHOLE TABLE***
+--select CHECKSUM_AGG(CHECKSUM(*)) from table_name;
+
+
+--***GET INFO ABOUT TABLE COLUMNS***
+--SELECT 
+--    c.name 'Column Name',
+--    t.Name 'Data type',
+--    c.max_length 'Max Length',
+--    c.precision ,
+--    c.scale ,
+--    c.is_nullable,
+--    ISNULL(i.is_primary_key, 0) 'Primary Key'
+--FROM    
+--    sys.columns c
+--INNER JOIN 
+--    sys.types t ON c.user_type_id = t.user_type_id
+--LEFT OUTER JOIN 
+--    sys.index_columns ic ON ic.object_id = c.object_id AND ic.column_id = c.column_id
+--LEFT OUTER JOIN 
+--    sys.indexes i ON ic.object_id = i.object_id AND ic.index_id = i.index_id
+--WHERE
+--    c.object_id = OBJECT_ID('dbo.freegoods_action')
+
+
+--select top 10 * from database_name.table_name
+
+
+--***FIND TEXT IN STORED PROCEDURES***
+--SELECT DISTINCT
+--       o.name AS Object_Name,
+--       o.type_desc
+--  FROM sys.sql_modules m
+--       INNER JOIN
+--       sys.objects o
+--         ON m.object_id = o.object_id
+-- WHERE lower(m.definition) 
+ --NOT LIKE '%\[txt\]%' ESCAPE '\'
+NOT 
+--LIKE '%other_txt%' ESCAPE '\'
+--LIKE '%-other_txt_2%' ESCAPE '\'
+--LIKE '%SET NOCOUNT ON%' ESCAPE '\'
+--LIKE '%SET @_query = REPLACE(@_query, ''Mobile_Nestle2_Arc'', @db_name_arc)%' ESCAPE '\'
+--LIKE '%create  procedure%'-- ESCAPE '\'
+
+
+
+
+--***FIND ALL INDEXES IN TABLES***
+--select i.[name] as index_name,
+--    substring(column_names, 1, len(column_names)-1) as [columns],
+--    case when i.[type] = 1 then 'Clustered index'
+--        when i.[type] = 2 then 'Nonclustered unique index'
+--        when i.[type] = 3 then 'XML index'
+--        when i.[type] = 4 then 'Spatial index'
+--        when i.[type] = 5 then 'Clustered columnstore index'
+--        when i.[type] = 6 then 'Nonclustered columnstore index'
+--        when i.[type] = 7 then 'Nonclustered hash index'
+--        end as index_type,
+--    case when i.is_unique = 1 then 'Unique'
+--        else 'Not unique' end as [unique],
+--    schema_name(t.schema_id) + '.' + t.[name] as table_view, 
+--    case when t.[type] = 'U' then 'Table'
+--        when t.[type] = 'V' then 'View'
+--        end as [object_type]
+--from sys.objects t
+--    inner join sys.indexes i
+--        on t.object_id = i.object_id
+--    cross apply (select col.[name] + ', '
+--                    from sys.index_columns ic
+--                        inner join sys.columns col
+--                            on ic.object_id = col.object_id
+--                            and ic.column_id = col.column_id
+--                    where ic.object_id = t.object_id
+--                        and ic.index_id = i.index_id
+--                            order by key_ordinal
+--                            for xml path ('') ) D (column_names)
+--where t.is_ms_shipped <> 1
+--and index_id > 0
+--order by i.[name]
+
+
+
+
+--***FIND TABLE BY TABLE NAME***
+--SELECT * 
+--FROM sys.tables 
+--WHERE lower(name) LIKE '%matrix%'
